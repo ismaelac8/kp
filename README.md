@@ -77,7 +77,7 @@ exists = db.table_exists(table_name='table_name')
 ```python
 db.remove_all_data(table_name='table_name')
 ```
-# Close the connection to the database
+### Close the connection to the database
 ```python
 db.close()
 ```
