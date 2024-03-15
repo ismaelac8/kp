@@ -1,0 +1,53 @@
+Import the module
+from utility.mongodb import mongoDB
+Insert test data into mongo database
+In order to insert data, it is necessary to have the json files in the directory ./component-tests/mongo_data/
+
+# Create a dictionary with the collection names as keys and the json file names
+# as values.
+data_dict = {
+    "cars": "cars.json",
+    "bikes": "bikes.json"
+}
+ 
+# Create a MongoDatabase object
+client = mongoDB.MongoDatabase(
+    mongo_client_URI = "mongodb://your_database:port",
+    mongo_database = "vehicles",
+    mongo_data_dict = data_dict
+)
+ 
+# Call insert_mongo_data
+client.insert_mongo_data()
+Fetch data
+# Create a dictionary with the query. Field name as key and data as value
+query = {
+    "id": 3
+}
+ 
+# Call fetch_data_with_field
+document = client.fetch_data_with_field(
+    collection_name = "bikes",
+    query = query
+)
+Work with collections
+# Get a collection
+cars = client.get_collection_by_name("cars")
+ 
+# Print the contents of the collection
+client.print_collection(cars)
+ 
+# This line is equivalent
+client.print_collection_by_name("cars")
+ 
+# Fetch a document
+vehicle = client.get_document_by_id(
+    collection = cars,
+    document_id = 5
+    )
+ 
+# Delete the document
+client.delete_from_collection(
+    collection = cars,
+    document_id = 5
+)
