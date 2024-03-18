@@ -60,11 +60,6 @@ admin.close()
 ## Description:
 This module provides a Producer class for producing messages to Kafka topics.
 
-## Requirements:
-- KafkaProducer from kafka required.
-- Minimum configuration settings including bootstrap_servers must be provided.
-- Python 3.x installed.
-
 ## Usage:
 
 ### Initialize Producer
@@ -91,11 +86,6 @@ kafka_producer.close()
 
 ## Description:
 This module provides a Consumer class for consuming messages from Kafka topics.
-
-## Requirements:
-- KafkaConsumer from kafka required.
-- Minimum configuration settings including bootstrap_servers must be provided.
-- Python 3.x installed.
 
 ## Usage:
 
