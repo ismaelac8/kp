@@ -1,83 +1,121 @@
-## Description
-This module provides a class `OracleDB` for interacting with an Oracle database. It allows various operations such as connecting to the database, inserting, updating, and deleting data, as well as executing custom SQL queries.
+## Kafka Utility Modules
+
+This repository contains utility modules for interacting with Apache Kafka, including an AdminClient for administrative operations, a Producer for producing messages, and a Consumer for consuming messages.
+
+## Import All Modules
+```python
+from kafka import KafkaProducer, KafkaConsumer
+from confluent_kafka import KafkaException
+from utility.kafka import consumer, producer, admin_client
+```
+
+## Admin Client Module
+
+## Description:
+This module provides an AdminClient class for interacting with Apache Kafka administrative operations such as creating topics, checking topic existence, and deleting topics.
 
 ## Requirements
-- Oracle Instant Client installed and correctly configured.
 - Python 3.x installed.
-- `oracledb` library installed (`pip install oracledb`).
-- `pandas` library installed (`pip install pandas`).
+- `kafka-python` library installed (`pip install kafka-python`).
+- `confluent_kafka` library installed (`pip install confluent_kafka`).
 
-## Usage
+## Usage:
 
-### 1. Connection to Oracle Database
+### Initialize AdminClient
 ```python
-from utility.oracledb import OracleDB
-```
-#### Create an instance of OracleDB
-```python
-db = OracleDB(
-    user='username',
-    password='password',
-    host='localhost',
-    port=1521,
-    service_name='service_name'
-)
-```
-#### Connect to the database
-```python
-db.connect()
+configuration = {
+	"bootstrap_servers":"localhost:9092",
+	"client_id":'test',
+}
+admin = admin_client.AdminClient(configuration)
 ```
 
-## Basic Operations
+### Create a topic
+```python
+topic_config = {
+    "name": "test-topic",
+    "num_partitions": 3,
+    "replication_factor": 1
+}
+admin.create_topic(topic_config):
+```
 
-### Insert a record into a specific table
+### Check if a topic exists
 ```python
-db.add_data(table_name='table_name', values={'column_1': 'value_1', 'column_2': 'value_2'})
+admin.topic_exists("test-topic")
 ```
-### Update records in a specific table
-```python
-db.update_data(table_name='table_name', value_to_update={'column': 'new_value'}, condition_column='value')
-```
-### Delete records from a specific table
-```python
-db.remove_data(table_name='table_name', condition_column='value')
-```
-### Execute a custom SQL query
-```python
-result = db.execute_sql(query="SELECT * FROM table_name WHERE column = 'value'")
-print(result)
-```
-### Select data from a specific table
-```python
-rows = db.select(
-    table_name='table_name',
-    condition={"key": "column_name", "value": "desired_value"},
-    column_name=["column_1", "column_2"]
-)
-```
-### Select data from a specific table based on a query
-```python
-rows = db.select_by_query(
-    table_name='table_name',
-    condition_query="column_name LIKE '%desired_value%'",
-    column_name=["column_1", "column_2"]
-)
-```
-## Other Operations
 
-### Create a new table with specified columns
+### Delete a topic
 ```python
-db.create_table(table_name='table_name', columns=[{"key": "column_name", "value": "data_type"}])
+admin.delete_topic("test-topic")
 ```
-### Check if a table exists in the database
+
+### Close the connection
 ```python
-exists = db.table_exists(table_name='table_name')
+admin.close()
 ```
-### Remove all data from a specific table
+
+## Producer Module
+
+## Description:
+This module provides a Producer class for producing messages to Kafka topics.
+
+## Requirements:
+- KafkaProducer from kafka required.
+- Minimum configuration settings including bootstrap_servers must be provided.
+- Python 3.x installed.
+
+## Usage:
+
+### Initialize Producer
 ```python
-db.remove_all_data(table_name='table_name')
+p_config = {
+    "bootstrap_servers": "localhost:9092",
+    "value_serializer": lambda v: v.encode('utf-8'),
+    "key_serializer": lambda v: str(v).encode(),
+    "acks": 0
+}
+kafka_producer = producer.Producer(p_config)
 ```
-### Close the connection to the database
+
+### Produce a message
 ```python
-db.close()
+kafka_producer.produce("test-topic","Hello, kafka!")
+```
+### Close the connection
+```python
+kafka_producer.close()
+```
+
+## Consumer Module
+
+## Description:
+This module provides a Consumer class for consuming messages from Kafka topics.
+
+## Requirements:
+- KafkaConsumer from kafka required.
+- Minimum configuration settings including bootstrap_servers must be provided.
+- Python 3.x installed.
+
+## Usage:
+
+### Initialize Consumer
+```python
+c_config = {
+    "bootstrap_servers": "kafka:9092",
+    "enable_auto_commit": True,
+    "auto_offset_reset": "latest",
+    "request_timeout_ms": 3 * 1000
+}
+kafka_consumer = consumer.Consumer(c_config)
+```
+
+### Consume latest message
+```python
+kafka_consumer.consume_latest("test-topic")
+```
+
+### Close the connection
+```python
+kafka_consumer.close()
 ```
